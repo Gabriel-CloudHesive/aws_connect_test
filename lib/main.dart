@@ -39,11 +39,10 @@ class MainApp extends StatelessWidget {
     List<InstanceSummary>? instacesList = instancesResponse.instanceSummaryList;
     InstanceSummary instance = instacesList!.elementAt(0);
 
-    StartOutboundVoiceContactResponse start =
-        await service.startOutboundVoiceContact(
-            contactFlowId: "5974d26c-868f-462c-9a72-7f196858bfbb",
-            destinationPhoneNumber: "+13054912981",
-            instanceId: instance.id!,
-            queueId: "766f3755-ac91-4d4d-81d2-f1374e69a206");
+    service.startOutboundVoiceContact(
+        contactFlowId: "5974d26c-868f-462c-9a72-7f196858bfbb",
+        destinationPhoneNumber: "+13054912981",
+        instanceId: instance.id!,
+        queueId: "766f3755-ac91-4d4d-81d2-f1374e69a206");
   }
 }
