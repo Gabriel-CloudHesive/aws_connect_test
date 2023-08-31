@@ -39,12 +39,6 @@ class MainApp extends StatelessWidget {
     List<InstanceSummary>? instacesList = instancesResponse.instanceSummaryList;
     InstanceSummary instance = instacesList!.elementAt(0);
 
-    ListContactFlowsResponse contactFlowsResponse =
-        await service.listContactFlows(instanceId: instance.id!);
-    List<ContactFlowSummary>? contactFlowsList =
-        contactFlowsResponse.contactFlowSummaryList;
-    ContactFlowSummary contatcFlow = contactFlowsList!.elementAt(0);
-
     StartOutboundVoiceContactResponse start =
         await service.startOutboundVoiceContact(
             contactFlowId: "5974d26c-868f-462c-9a72-7f196858bfbb",
