@@ -1,12 +1,28 @@
-import 'package:flutter/material.dart';
 import 'package:aws_connect_api/connect-2017-08-08.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_js/flutter_js.dart';
 
 void main() {
   runApp(const MainApp());
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends StatefulWidget {
   const MainApp({super.key});
+
+  @override
+  State<MainApp> createState() => _MainAppState();
+}
+
+class _MainAppState extends State<MainApp> {
+  String _jsResult = '';
+  late JavascriptRuntime flutterJs;
+  @override
+  void initState() {
+    super.initState();
+
+    flutterJs = getJavascriptRuntime();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,16 +30,26 @@ class MainApp extends StatelessWidget {
       // debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: Center(
-          child: ElevatedButton(
-            onPressed: myAction,
-            child: const Text('Test'),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: amazonConnect,
+                child: const Text('Test'),
+              ),
+              ElevatedButton(
+                onPressed: runJS,
+                child: const Text("Run JS"),
+              ),
+              Text('JS Evaluate Result: $_jsResult\n'),
+            ],
           ),
         ),
       ),
     );
   }
 
-  void myAction() async {
+  void amazonConnect() async {
     final service = Connect(
       region: 'ap-southeast-1',
       endpointUrl: "https://connect.ap-southeast-1.amazonaws.com",
@@ -44,5 +70,21 @@ class MainApp extends StatelessWidget {
         destinationPhoneNumber: "+13054912981",
         instanceId: instance.id!,
         queueId: "766f3755-ac91-4d4d-81d2-f1374e69a206");
+  }
+
+  void runJS() async {
+    try {
+      String blocSJ = await rootBundle.loadString("assets/bloc.js");
+      JsEvalResult jsResult = flutterJs.evaluate(blocSJ);
+      setState(() {
+        _jsResult = jsResult.stringResult;
+      });
+
+      String streams =
+          await rootBundle.loadString("assets/connect-streams-min.js");
+      JsEvalResult streamsResult = flutterJs.evaluate(streams);
+    } on PlatformException catch (e) {
+      print('ERRO: ${e.details}');
+    }
   }
 }
