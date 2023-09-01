@@ -34,10 +34,11 @@ class MainApp extends StatelessWidget {
     );
 
     ListInstancesResponse inst = await service.listInstances();
-    List<InstanceSummary>? summaryList = inst.instanceSummaryList;
-    InstanceSummary sum = summaryList!.elementAt(0);
+    List<InstanceSummary>? instanceSummary = inst.instanceSummaryList;
+    InstanceSummary instance = instanceSummary!.elementAt(0);
+
     service.createQuickConnect(
-      instanceId: sum.id!,
+      instanceId: instance.id!,
       name: "QCTest!!!",
       description: "Description test.",
       quickConnectConfig: QuickConnectConfig(
@@ -45,5 +46,10 @@ class MainApp extends StatelessWidget {
         phoneConfig: PhoneNumberQuickConnectConfig(phoneNumber: "+13054912981"),
       ),
     );
+
+    ListContactFlowsResponse listContactFlowsResponse =
+        await service.listContactFlows(instanceId: instance.id!);
+    List<ContactFlowSummary>? contactFlowSummary =
+        listContactFlowsResponse.contactFlowSummaryList;
   }
 }
