@@ -1,7 +1,8 @@
 import 'package:aws_connect_api/connect-2017-08-08.dart';
+import 'package:aws_connect_test/my_web_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_js/flutter_js.dart';
+// import 'package:flutter_js/flutter_js.dart';
 
 void main() {
   runApp(const MainApp());
@@ -15,19 +16,10 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
-  String _jsResult = '';
-  late JavascriptRuntime flutterJs;
-  @override
-  void initState() {
-    super.initState();
-
-    flutterJs = getJavascriptRuntime();
-  }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      // debugShowCheckedModeBanner: false,
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: Center(
           child: Column(
@@ -35,13 +27,21 @@ class _MainAppState extends State<MainApp> {
             children: [
               ElevatedButton(
                 onPressed: amazonConnect,
-                child: const Text('Test'),
+                child: const Text('Call from Amazon Connect'),
               ),
-              ElevatedButton(
-                onPressed: runJS,
-                child: const Text("Run JS"),
-              ),
-              Text('JS Evaluate Result: $_jsResult\n'),
+              const Divider(thickness: 1),
+              Builder(builder: (context) {
+                return ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const MyWebView(),
+                        ));
+                  },
+                  child: const Text('Show WebView'),
+                );
+              }),
             ],
           ),
         ),
@@ -54,10 +54,10 @@ class _MainAppState extends State<MainApp> {
       region: 'ap-southeast-1',
       endpointUrl: "https://connect.ap-southeast-1.amazonaws.com",
       credentials: AwsClientCredentials(
-        accessKey: "ASIASJ3TVY5DLZ6EGNZL",
-        secretKey: "lU2LxzFyqREfk2rW6/0/ePMoQefzGQQWRZc3t6kc",
+        accessKey: "ASIASJ3TVY5DILGSQWOW",
+        secretKey: "lSXVaCYzcdSZr2Xia56tFn0Vbi2xi+2j+cnhHEHZ",
         sessionToken:
-            "IQoJb3JpZ2luX2VjEA4aCXVzLWVhc3QtMSJGMEQCIHikqfcRQrQZmik5TBedrfLDZaQpR9HFQzoeyZVIvzECAiAEIP1TSEwC4zm7+gJu92R3idWS8YnKred+MBqB4ta+iSqqAwjX//////////8BEAEaDDE1ODYxOTUxODc5MCIM/fiT0IIeyoAUFCQ0Kv4CqPRmgggxJ4OuWHOJ4voF4b2n6dvwz/CcF9cUfmu0I2g17LVA5wa+b0U+rT+Zt3IyZypLi3b3bPTpiTTZCg9DJ8mspOwlNitR+s12OIXbqlGPPdM2WXdCo6g00m++l3eiS6/qqsVBrdtOYNLU2IJ6Jvr5NHs1OrEvCHQxPadhBxHpA77KR4p6/E19TB6jpq89uPaXL+HbKa+6heaZafBv0d+1T031SrEf/l0jiolcTn0jd6cND770nQWKJNgijx147ynyTBDN1jaUQB7XKuH3HKSCeGDzzBeheSZZ6AHc+GWUJGQIRnTKGEHM5enMoO9AsU1dsYgTKO14mEBl1+JxDMksORPuBqmIDTi4yHSHq8ySkOL+ES24J/qt+YWGCi/7ekKw716HcB1e+TTrM3aHS2j+Vo0hfDM4KEW4fj8upsO/Ax9aQspQcn4gUwMZoS5V3W5wtZ7IbA+NE5802iTTE6cbbG1hlJ620JjmQEIkxGYCU7bVbouec63H9sjpGzC2qMKnBjqnAeqWllNJz4dW7DQWNoEfrYFhnj9hcH88bdX5+qdFh/T072jc5HBEabCkL7zs5a18j/JWIGO0Jbo5W1U1m8dvqeD12+twD7YsqZWJmXtM0bgLrB7A+ud5vvL3dB++vKysINwV4k7cxEiDXZ56AMVRuPSxySb29vS+EPJDUDD8Z6V+eYEuyu0JJqO/TIMBdS8LIeiaK8OLDkrIFFZSxu+kYqYHoHRhKDjT",
+            "IQoJb3JpZ2luX2VjEEcaCXVzLWVhc3QtMSJGMEQCIFq7Jh/p5OC8XKsxRruVUoAg3sVLw0rdju5TsU9/txsdAiArtv/iQsZBh8Ot55VjQVr2vwkAqJJT48jzG8o08bkvbiqhAwgwEAEaDDE1ODYxOTUxODc5MCIMsASiThg6LcnVLE8PKv4CD51M2b+TI0es0R5BYNwfJ5kpDI1ng9LowMiBPnJnmQwOs80e/XGL92Sch61f2Fojbj4AQxzPV63sMzVoVDDC9rJPtsUpgGMmV0rh8qkTJbMHQWrcIwsnF3CBinDraZ7jJZvoLpPBzkn0n3HwFl1Xgumpa/S6WwzhtfCn6tFnyR5cmdTEUNQJ6NppznufvTsKMhzIys7tq079B/C8jIXrOFTMHLbnjvbb4S1Aty20FEx8JtLskymtXVcfEQmBdvu8iQ+VpLARfArlB53Q2pLC3ptxq5m2JX2ril0qyUlKKupBHbPW5pAi/cVLaETqRSkxTuZZglYMGnRS5ls0grt2OgZE0LREYMbWMlMi6mW5/6zVScpA4oeO/+wGeTHcEl3iTVoFBrwUOyhHrEn4gBeW1IbMQ9V6pMAs8HbQVrBpeTuNh41lMy2eTHBkTiDcF80ASCBAPuAU07XMaAYjG2tZPSAf9z9zhxtgVnVgj0gieEiAoMZi3QpPRongTS5yjzCQk4eoBjqnASWKwZGoY6P8Cx7BzVyUHYtJgdoplLyu4oiHyDG7fVKFCnX6VS/lLimRadNjGkBQvb0Qihg2tDLiArqE6pCTqWrJtCKWeexpz0GgmYV6BSRjki62hzmQPUfl/BIZGceV8WgrWPaXaAcbqVhjJnLOukGW6F9qZkrlmshHKg8auzuRZo7eNFwLtpnTecs0N3AE223VKekY2eleDgQwNpHQeBIli73tb3MD",
       ),
     );
 
@@ -70,21 +70,5 @@ class _MainAppState extends State<MainApp> {
         destinationPhoneNumber: "+13054912981",
         instanceId: instance.id!,
         queueId: "766f3755-ac91-4d4d-81d2-f1374e69a206");
-  }
-
-  void runJS() async {
-    try {
-      String blocSJ = await rootBundle.loadString("assets/bloc.js");
-      JsEvalResult jsResult = flutterJs.evaluate(blocSJ);
-      setState(() {
-        _jsResult = jsResult.stringResult;
-      });
-
-      String streams =
-          await rootBundle.loadString("assets/connect-streams-min.js");
-      JsEvalResult streamsResult = flutterJs.evaluate(streams);
-    } on PlatformException catch (e) {
-      print('ERRO: ${e.details}');
-    }
   }
 }
