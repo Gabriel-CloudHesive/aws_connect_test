@@ -10,8 +10,6 @@ dependencies:
   aws_connect_api: ^2.0.0
   flutter:
     sdk: flutter
-  flutter_js: ^0.7.2
-  webview_flutter: ^4.2.4
 dev_dependencies:
   flutter_lints: ^2.0.0
   flutter_test:
@@ -19,6 +17,3 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-
-  assets:
-    - assets/
